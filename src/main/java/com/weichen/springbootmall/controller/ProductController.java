@@ -1,5 +1,6 @@
 package com.weichen.springbootmall.controller;
 
+import com.weichen.springbootmall.constant.ProductCategory;
 import com.weichen.springbootmall.dto.ProductRequest;
 import com.weichen.springbootmall.model.Product;
 import com.weichen.springbootmall.service.ProductService;
@@ -18,9 +19,13 @@ public class ProductController {
     private ProductService productService;
 
     //查詢商品列表，用LIST查詢整個product，"/products"為一個資源，即使商品資訊不存在，但是products資源必然存在的，故須為200給前端
+    //查詢商品分類、關鍵字查詢
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(){
-        List<Product> productList = productService.getProducts();
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(required = false) ProductCategory category,  //required = false 表示此參數是可選的參數，不一定要帶上category的值
+            @RequestParam(required = false) String search
+    ){
+        List<Product> productList = productService.getProducts(category, search);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }

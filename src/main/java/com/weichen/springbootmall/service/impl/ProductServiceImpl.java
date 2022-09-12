@@ -1,5 +1,6 @@
 package com.weichen.springbootmall.service.impl;
 
+import com.weichen.springbootmall.constant.ProductCategory;
 import com.weichen.springbootmall.dao.ProductDao;
 import com.weichen.springbootmall.dto.ProductRequest;
 import com.weichen.springbootmall.model.Product;
@@ -14,6 +15,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductDao productDao ;
+
+    @Override
+    public List<Product> getProducts(ProductCategory category,String search) {
+        return productDao.getProducts(category, search);
+    }
 
     @Override
     public Product getProductById(Integer productId) {
@@ -36,8 +42,5 @@ public class ProductServiceImpl implements ProductService {
         productDao.deleteProductById(productId);
     }
 
-    @Override
-    public List<Product> getProducts() {
-        return productDao.getProducts();
-    }
+
 }
