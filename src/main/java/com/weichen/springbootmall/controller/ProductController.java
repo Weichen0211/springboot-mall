@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class ProductController {
@@ -16,7 +17,16 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    //查詢商品
+    //查詢商品列表，用LIST查詢整個product，"/products"為一個資源，即使商品資訊不存在，但是products資源必然存在的，故須為200給前端
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getProducts(){
+        List<Product> productList = productService.getProducts();
+
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
+    }
+
+
+    //查詢商品中某個特定商品，"/products/{productId}"的{productId}不存在時，需要回404給前端
     @GetMapping("/products/{productId}")
     public ResponseEntity<Product> getProduct(@PathVariable Integer productId){
 
@@ -30,7 +40,7 @@ public class ProductController {
         }
 
     }
-
+    //新增
     @PostMapping("/products")
     public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest){
         Integer productId = productService.createProduct(productRequest);
@@ -40,9 +50,9 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
-
+    //修改
     @PutMapping("/products/{productId}")
-    public ResponseEntity<Product> updateProdut(@PathVariable Integer productId,
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId,
                                                 @RequestBody @Valid ProductRequest productRequest){
 
         //檢查product是否存在
@@ -57,11 +67,11 @@ public class ProductController {
         productService.updateProduct(productId,productRequest);
 
         Product updatedProduct = productService.getProductById(productId);
-        //201
+        //201   created
         return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
     }
 
-
+    //刪除
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable Integer productId){
 
