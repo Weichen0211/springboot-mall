@@ -49,6 +49,7 @@ public class ProductController {
         Product product = productService.getProductById(productId);
 
         if(product == null){
+            //404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -56,8 +57,18 @@ public class ProductController {
         productService.updateProduct(productId,productRequest);
 
         Product updatedProduct = productService.getProductById(productId);
-
+        //201
         return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
+    }
+
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId){
+
+        productService.deleteProductById(productId);
+        //204  No content
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
     }
 
 }
