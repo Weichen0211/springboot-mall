@@ -23,13 +23,21 @@ public class ProductController {
     //查詢商品分類、關鍵字查詢
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts(
+            // @RequestParam 表示可從URL中得到的請求參數
+            // 查詢條件 filtering，控制查詢條件的參數
             @RequestParam(required = false) ProductCategory category,  //required = false 表示此參數是可選的參數，不一定要帶上category的值
-            @RequestParam(required = false) String search
+            @RequestParam(required = false) String search,
+
+            // 排序 Sorting 控制商品的排序
+            @RequestParam(defaultValue = "created_date") String orderBy,       //決定以甚麼欄位來排序
+            @RequestParam(defaultValue = "desc") String sort           //決定從小排到大還是反過來
     ){
         //透過設定ProductQueryParams 將傳遞參數傳入，只需要修改ProductQueryParams 這CLASS，就不需要頻繁修改SERVICE、DAO
         ProductQueryParams productQueryParams = new ProductQueryParams();
         productQueryParams.setCategory(category);
         productQueryParams.setSearch(search);
+        productQueryParams.setOrderBy(orderBy);
+        productQueryParams.setSort(sort);
 
         List<Product> productList = productService.getProducts(productQueryParams);
 

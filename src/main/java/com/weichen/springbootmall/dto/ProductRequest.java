@@ -5,6 +5,7 @@ import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotNull;
 
+//接取從前端新增輸入進來的資料
 public class ProductRequest {
 
     @NotNull
