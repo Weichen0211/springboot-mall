@@ -1,7 +1,7 @@
 package com.weichen.springbootmall.dao.impl;
 
-import com.weichen.springbootmall.constant.ProductCategory;
 import com.weichen.springbootmall.dao.ProductDao;
+import com.weichen.springbootmall.dto.ProductQueryParams;
 import com.weichen.springbootmall.dto.ProductRequest;
 import com.weichen.springbootmall.model.Product;
 import com.weichen.springbootmall.rowmapper.ProductRowMapper;
@@ -25,7 +25,7 @@ public class ProductDaoImpl implements ProductDao {
 
     //查詢商品列表
     @Override
-    public List<Product> getProducts(ProductCategory category,String search) {
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
 
         String sql = "SELECT product_id,product_name, category, " +
                 "image_url, price, stock, description, created_date, " +
@@ -34,16 +34,16 @@ public class ProductDaoImpl implements ProductDao {
 
         Map<String, Object> map = new HashMap<>();
 
-        if(category != null) {
+        if(productQueryParams.getCategory() != null) {
             sql = sql + " AND category = :category" ;
             //因category 為enum類型，故使用上要用name方法，將enum類型轉為字串，在加入到map上
-            map.put("category", category.name());
+            map.put("category", productQueryParams.getCategory().name());
         }
 
-        if(search != null){
+        if(productQueryParams.getSearch() != null){
             sql = sql + " AND product_name LIKE :search";
 
-            map.put("search", "%" + search + "%");
+            map.put("search", "%" + productQueryParams.getSearch() + "%");
         }
 
         List<Product> productList = namedParameterJdbcTemplate.query(sql,map, new ProductRowMapper());

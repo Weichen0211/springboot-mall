@@ -1,6 +1,7 @@
 package com.weichen.springbootmall.controller;
 
 import com.weichen.springbootmall.constant.ProductCategory;
+import com.weichen.springbootmall.dto.ProductQueryParams;
 import com.weichen.springbootmall.dto.ProductRequest;
 import com.weichen.springbootmall.model.Product;
 import com.weichen.springbootmall.service.ProductService;
@@ -25,7 +26,12 @@ public class ProductController {
             @RequestParam(required = false) ProductCategory category,  //required = false 表示此參數是可選的參數，不一定要帶上category的值
             @RequestParam(required = false) String search
     ){
-        List<Product> productList = productService.getProducts(category, search);
+        //透過設定ProductQueryParams 將傳遞參數傳入，只需要修改ProductQueryParams 這CLASS，就不需要頻繁修改SERVICE、DAO
+        ProductQueryParams productQueryParams = new ProductQueryParams();
+        productQueryParams.setCategory(category);
+        productQueryParams.setSearch(search);
+
+        List<Product> productList = productService.getProducts(productQueryParams);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
