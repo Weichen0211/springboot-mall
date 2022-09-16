@@ -6,13 +6,18 @@ import com.weichen.springbootmall.dto.ProductRequest;
 import com.weichen.springbootmall.model.Product;
 import com.weichen.springbootmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
+@Validated
 @RestController
 public class ProductController {
 
@@ -30,7 +35,12 @@ public class ProductController {
 
             // 排序 Sorting 控制商品的排序
             @RequestParam(defaultValue = "created_date") String orderBy,       //決定以甚麼欄位來排序
-            @RequestParam(defaultValue = "desc") String sort           //決定從小排到大還是反過來
+            @RequestParam(defaultValue = "desc") String sort,           //決定從小排到大還是反過來
+
+            //分頁功能 Pagination @Max、@Min 限制前端傳來的值不得超過1000，不能是負數
+            @RequestParam(defaultValue = "5") @Max(1000) @Min(0) Integer limit,     //表示幾次要取得幾筆商品數據(保護資料庫效能)
+            @RequestParam(defaultValue = "0") @Min(0) Integer offset     //表示要跳過多少筆數據
+
     ){
         //透過設定ProductQueryParams 將傳遞參數傳入，只需要修改ProductQueryParams 這CLASS，就不需要頻繁修改SERVICE、DAO
         ProductQueryParams productQueryParams = new ProductQueryParams();
@@ -38,6 +48,8 @@ public class ProductController {
         productQueryParams.setSearch(search);
         productQueryParams.setOrderBy(orderBy);
         productQueryParams.setSort(sort);
+        productQueryParams.setLimit(limit);
+        productQueryParams.setOffset(offset);
 
         List<Product> productList = productService.getProducts(productQueryParams);
 

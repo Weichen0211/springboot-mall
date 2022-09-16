@@ -34,6 +34,7 @@ public class ProductDaoImpl implements ProductDao {
 
         Map<String, Object> map = new HashMap<>();
 
+        //查詢的條件 ex:商品類型 汽車、食物
         if(productQueryParams.getCategory() != null) {
             sql = sql + " AND category = :category" ;
             //因category 為enum類型，故使用上要用name方法，將enum類型轉為字串，在加入到map上
@@ -46,13 +47,22 @@ public class ProductDaoImpl implements ProductDao {
             map.put("search", "%" + productQueryParams.getSearch() + "%");
         }
 
+        //商品排序
         sql = sql + " ORDER BY " + productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
+
+        //商品分頁
+        sql = sql + " LIMIT :limit OFFSET :offset";
+        map.put("limit",productQueryParams.getLimit());
+        map.put("offset", productQueryParams.getOffset());
+
+
 
         List<Product> productList = namedParameterJdbcTemplate.query(sql,map, new ProductRowMapper());
 
         return productList;
     }
 
+    //按照ID查詢
     @Override
     public Product getProductById(Integer productId) {
 
@@ -74,6 +84,8 @@ public class ProductDaoImpl implements ProductDao {
 
     }
 
+
+    //新增
     @Override
     public Integer createProduct(ProductRequest productRequest) {
         String sql = "INSERT INTO product(product_name, category, image_url, price, stock, " +
@@ -103,7 +115,7 @@ public class ProductDaoImpl implements ProductDao {
         return productId;
     }
 
-
+    //修改
     @Override
     public void updateProduct(Integer productId, ProductRequest productRequest) {
         String sql = "UPDATE product SET product_name = :productName, category = :category, image_Url = :imageUrl,  "+
@@ -125,6 +137,7 @@ public class ProductDaoImpl implements ProductDao {
         namedParameterJdbcTemplate.update(sql, map);
     }
 
+    //刪除
     @Override
     public void deleteProductById(Integer productId) {
         String sql = "DELETE FROM product WHERE product_Id = :productId ";
