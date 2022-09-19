@@ -5,6 +5,7 @@ import com.weichen.springbootmall.dto.ProductQueryParams;
 import com.weichen.springbootmall.dto.ProductRequest;
 import com.weichen.springbootmall.model.Product;
 import com.weichen.springbootmall.service.ProductService;
+import com.weichen.springbootmall.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class ProductController {
     //查詢商品列表，用LIST查詢整個product，"/products"為一個資源，即使商品資訊不存在，但是products資源必然存在的，故須為200給前端
     //查詢商品分類、關鍵字查詢
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             // @RequestParam 表示可從URL中得到的請求參數
             // 查詢條件 filtering，控制查詢條件的參數
             @RequestParam(required = false) ProductCategory category,  //required = false 表示此參數是可選的參數，不一定要帶上category的值
@@ -51,9 +52,20 @@ public class ProductController {
         productQueryParams.setLimit(limit);
         productQueryParams.setOffset(offset);
 
+        //取得 product list
         List<Product> productList = productService.getProducts(productQueryParams);
 
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+        //取得product總數
+        Integer total = productService.countProduct(productQueryParams);
+
+        // 分頁 將資料回傳給前端(回傳json object)
+        Page<Product> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(productList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
 
