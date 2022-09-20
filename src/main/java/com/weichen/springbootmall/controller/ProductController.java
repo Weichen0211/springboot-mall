@@ -58,7 +58,7 @@ public class ProductController {
         //取得product總數
         Integer total = productService.countProduct(productQueryParams);
 
-        // 分頁 將資料回傳給前端(回傳json object)
+        // 分頁 將資料回傳給前端(回傳json object)，改寫requestBody格式
         Page<Product> page = new Page<>();
         page.setLimit(limit);
         page.setOffset(offset);
