@@ -1,12 +1,18 @@
 package com.weichen.springbootmall.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 public class User {
 
     private Integer userId;
     private String email;
+
+    @JsonIgnore  //當要轉換USER object為 json 格式時，就會忽略password的變數，不會傳回給前端
     private String password;
+
     private Date createdDate;
     private Date lastModifiedDate;
 

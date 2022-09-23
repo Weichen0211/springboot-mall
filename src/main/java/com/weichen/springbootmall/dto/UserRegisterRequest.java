@@ -1,12 +1,14 @@
 package com.weichen.springbootmall.dto;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 //用來接住前端傳來的參數
 public class UserRegisterRequest {
 
-    @NotBlank  //不可為NULL 即空白
+    @NotBlank  //不可為NULL 以及空白
+    @Email
     private String email;
 
     @NotBlank
