@@ -4,6 +4,7 @@ import com.weichen.springbootmall.dao.OrderDao;
 import com.weichen.springbootmall.dao.ProductDao;
 import com.weichen.springbootmall.dto.BuyItem;
 import com.weichen.springbootmall.dto.CreateOrderRequest;
+import com.weichen.springbootmall.model.Order;
 import com.weichen.springbootmall.model.OrderItem;
 import com.weichen.springbootmall.model.Product;
 import com.weichen.springbootmall.service.OrderService;
@@ -23,6 +24,18 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProductDao productDao;
 
+    @Override
+    public Order getOrderById(Integer orderId) {
+        // 查詢訂單總資訊
+        Order order = orderDao.getOrderById(orderId);
+
+        List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(orderId);
+
+        order.setOrderItemList(orderItemList);
+
+        return order;
+    }
+
     @Transactional
     @Override
     public Integer createOrder(Integer userId, CreateOrderRequest createOrderRequest) {
@@ -30,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
         int totalAmount = 0;
         List<OrderItem> orderItemList = new ArrayList<>();
 
-        // 計算每一筆商品價錢
+        // 抓取每一筆商品
         for(BuyItem buyItem : createOrderRequest.getBuyItemList()){
             Product product = productDao.getProductById(buyItem.getProductId());
 

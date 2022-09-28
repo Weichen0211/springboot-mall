@@ -1,10 +1,15 @@
 package com.weichen.springbootmall.dao;
 
+import com.weichen.springbootmall.model.Order;
 import com.weichen.springbootmall.model.OrderItem;
 
 import java.util.List;
 
 public interface OrderDao {
+
+    Order getOrderById(Integer orderId);
+
+    List<OrderItem> getOrderItemsByOrderId(Integer orderId);
 
     Integer createOrder(Integer userId, Integer totalAmount);
 
