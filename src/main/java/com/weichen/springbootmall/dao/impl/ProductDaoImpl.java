@@ -28,7 +28,7 @@ public class ProductDaoImpl implements ProductDao {
         String sql = "SELECT count(*) FROM product WHERE 1=1";
 
         Map<String, Object> map = new HashMap<>();
-        // 進行SQL語句的拼接(155
+        // 進行SQL語句的拼接(178
         sql = addFilteringSql(sql, map, productQueryParams);
 
         // 計算count值，並轉成integer
